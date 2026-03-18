@@ -1,0 +1,67 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.openclaw.ai/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Model Studio
+
+# Model Studio (Alibaba Cloud)
+
+The Model Studio provider gives access to Alibaba Cloud Coding Plan models,
+including Qwen and third-party models hosted on the platform.
+
+* Provider: `modelstudio`
+* Auth: `MODELSTUDIO_API_KEY`
+* API: OpenAI-compatible
+
+## Quick start
+
+1. Set the API key:
+
+```bash  theme={"theme":{"light":"min-light","dark":"min-dark"}}
+openclaw onboard --auth-choice modelstudio-api-key
+```
+
+2. Set a default model:
+
+```json5  theme={"theme":{"light":"min-light","dark":"min-dark"}}
+{
+  agents: {
+    defaults: {
+      model: { primary: "modelstudio/qwen3.5-plus" },
+    },
+  },
+}
+```
+
+## Region endpoints
+
+Model Studio has two endpoints based on region:
+
+| Region     | Endpoint                             |
+| ---------- | ------------------------------------ |
+| China (CN) | `coding.dashscope.aliyuncs.com`      |
+| Global     | `coding-intl.dashscope.aliyuncs.com` |
+
+The provider auto-selects based on the auth choice (`modelstudio-api-key` for
+global, `modelstudio-api-key-cn` for China). You can override with a custom
+`baseUrl` in config.
+
+## Available models
+
+* **qwen3.5-plus** (default) - Qwen 3.5 Plus
+* **qwen3-max** - Qwen 3 Max
+* **qwen3-coder** series - Qwen coding models
+* **GLM-5**, **GLM-4.7** - GLM models via Alibaba
+* **Kimi K2.5** - Moonshot AI via Alibaba
+* **MiniMax-M2.5** - MiniMax via Alibaba
+
+Most models support image input. Context windows range from 200K to 1M tokens.
+
+## Environment note
+
+If the Gateway runs as a daemon (launchd/systemd), make sure
+`MODELSTUDIO_API_KEY` is available to that process (for example, in
+`~/.openclaw/.env` or via `env.shellEnv`).
+
+
+Built with [Mintlify](https://mintlify.com).
