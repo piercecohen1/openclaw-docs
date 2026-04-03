@@ -12,7 +12,7 @@ Local mirror of all OpenClaw documentation from docs.openclaw.ai, stored as raw 
 ## Re-scraping
 
 ```bash
-bash download.sh --force   # Clear cached URL list, re-fetch from llms.txt
+bash download.sh
 git add -A && git commit -m "Update docs mirror $(date +%-m-%-d-%y)" && git push
 ```
 

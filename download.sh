@@ -9,24 +9,17 @@ MAX_PARALLEL=10
 FAILED_LOG="/tmp/openclaw-docs-failed.txt"
 LLMS_TXT_CACHE="/tmp/openclaw-docs-urls.txt"
 
-# Handle --force flag
-FORCE=false
-if [[ "${1:-}" == "--force" ]]; then
-  FORCE=true
-  echo "Force mode: clearing cached URL list..."
-  rm -f "$LLMS_TXT_CACHE"
-fi
+# --force flag is accepted for backward compat but is now a no-op
+# (URL list is always re-fetched)
 
 > "$FAILED_LOG"
 
-# Fetch and cache the llms.txt URL list
-if [[ ! -f "$LLMS_TXT_CACHE" ]]; then
-  echo "Fetching llms.txt index..."
-  curl -sL "https://docs.openclaw.ai/llms.txt" \
-    | grep -oE 'https://docs\.openclaw\.ai/[^)]*\.md' \
-    | sort -u > "$LLMS_TXT_CACHE"
-  echo "Found $(wc -l < "$LLMS_TXT_CACHE" | tr -d ' ') markdown files"
-fi
+# Always re-fetch to catch new/removed pages
+echo "Fetching llms.txt index..."
+curl -sL "https://docs.openclaw.ai/llms.txt" \
+  | grep -oE 'https://docs\.openclaw\.ai/[^)]*\.md' \
+  | sort -u > "$LLMS_TXT_CACHE"
+echo "Found $(wc -l < "$LLMS_TXT_CACHE" | tr -d ' ') markdown files"
 
 TOTAL=$(wc -l < "$LLMS_TXT_CACHE" | tr -d ' ')
 echo "Downloading $TOTAL pages (max $MAX_PARALLEL parallel)..."
@@ -150,3 +143,6 @@ if [[ "$FAILED_COUNT" -gt 0 ]]; then
   echo "  Failures: $FAILED_COUNT (logged to $FAILED_LOG)"
 fi
 echo "Generated README.md (scraped $SCRAPE_SHORT)"
+
+# Write machine-readable timestamp for freshness checks
+date +%Y-%m-%d > "$SCRIPT_DIR/.last-updated"
